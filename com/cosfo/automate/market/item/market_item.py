@@ -2,12 +2,15 @@ import market
 import requests
 import json
 from com.cosfo.automate.login import login
+from com.cosfo.automate.supplier import supplier
 
 
 # 新建无仓商品
 def create_no_warehouse_item(token, title, price):
     # 先创建market 获取market_id
     market_id = market.create_market(token, title, None, None)
+    # 无货商品需要供应商信息
+    supplier_id, supplier_name = supplier.query_supplier_page(token)
 
     url = 'https://devmanage.cosfo.cn/market/item/upsert/add'
     headers = {
@@ -41,9 +44,9 @@ def create_no_warehouse_item(token, title, price):
             "strategyType": 0
         },
         "saleLimitRule": 0,
-        "supplierName": "pg",
-        "supplierId": "3667",
-        "specification": "1箱*12个"
+        "supplierName": supplier_name,
+        "supplierId": supplier_id,
+        "specification": "0_1箱*12个"
     }
 
     json_params = json.dumps(params)
